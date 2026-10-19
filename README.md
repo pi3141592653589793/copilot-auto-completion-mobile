@@ -1,5 +1,13 @@
 # Copilot Auto Completion Mobile (i18n)
 
+> ⚠️ **Personal use only · AI-generated code · No update guarantee**
+>
+> This repository is a **personal playground**. Most of the code in this fork was written or refactored by an AI assistant under a human's direction. It is provided **as-is**, with **no promise of maintenance, fixes, or responses to issues**. If something breaks, you are on your own — fork it and fix it.
+>
+> **自用项目 · AI 生成代码 · 不保证更新**
+>
+> 本仓库是**个人自用**的修改版，其中大部分改动由 AI 在人工指导下完成。代码按**现状**提供，**不承诺**持续维护、修复问题或回应 issue。出问题请自行 fork 修改。
+
 > **Unofficial fork** of [Copilot Auto Completion Plus](https://github.com/yetanotherrepo/obsidian-copilot-auto-completion-plus) by Daniil Shipilov, which itself builds on [Copilot auto completion](https://github.com/j0rd1smit/obsidian-copilot-auto-completion) by Jordi Smit.
 >
 > **本仓库是第三方 fork，非官方版本。** 上游作者与本仓库维护者无关；使用风险自负。
@@ -7,6 +15,20 @@
 [中文说明](#中文说明) · [English](#english)
 
 ---
+
+## Platform support · 平台支持
+
+| Platform | Status · 状态 | Notes · 说明 |
+|---|---|---|
+| Windows / macOS / Linux (Obsidian desktop) | ✅ Expected to work · 预期可用 | Same code path as upstream; no platform-specific APIs added. |
+| **Android** | ✅ **Tested** · 已实机验证 | Verified on Honor tablet, Obsidian 1.9+, Android 14. |
+| iOS / iPadOS | ⚠️ Expected to work · 预期可用 | Same WebView runtime as Android; not tested on a device. |
+| Obsidian Publish / web | ❌ Not applicable | Plugins do not run there. |
+
+The plugin only uses APIs available on every Obsidian platform: `requestUrl`, `registerEditorExtension`, CodeMirror 6. No Node.js, Electron or `child_process` calls remain in the bundle.
+
+插件只使用各平台都有的 API（`requestUrl`、`registerEditorExtension`、CodeMirror 6），产物中不含任何 Node.js / Electron / `child_process` 调用。
+
 
 ## English
 
