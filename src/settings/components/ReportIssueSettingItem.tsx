@@ -3,6 +3,7 @@ import * as React from "react";
 import SettingsItem from "./SettingsItem";
 import {Settings} from "../versions";
 import {openGitHubIssue} from "../../support/github_issues";
+import { t } from "../../i18n";
 
 interface IProps {
     pluginVersion: string;
@@ -12,13 +13,13 @@ interface IProps {
 export default function ReportIssueSettingItem(props: IProps): React.JSX.Element {
     return (
         <SettingsItem
-            name={"Report an issue"}
+            name={t("Report an issue")}
             description={
                 "Open a GitHub issue with safe diagnostics about your provider, model, endpoint, and plugin state. API keys and note contents are not included."
             }
         >
             <button
-                aria-label="Report an issue on GitHub"
+                aria-label={t("Report an issue on GitHub")}
                 onClick={() => openGitHubIssue({
                     source: "settings",
                     pluginVersion: props.pluginVersion,

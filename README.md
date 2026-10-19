@@ -1,206 +1,79 @@
-# Copilot Auto Completion Plus for Obsidian
-This plugin adds a Copilot-like auto-completion to Obsidian.
-It uses large language models (LLMs) to generate text based on the `n` characters before and after your cursor.
-It will show the suggested completion in transparent text next to your cursor. 
-You can then press Tab to insert the entire suggestion, or the right arrow key to insert part of the suggestion. 
-Additionally, you can press Escape or move the cursor to ignore the suggestion.
-The plugin supports OpenAI, OpenRouter, DeepSeek, Anthropic, Gemini, Azure OpenAI, and Ollama.
+# Copilot Auto Completion Mobile (i18n)
 
-![demo](assets/demo-static.gif)
+> **Unofficial fork** of [Copilot Auto Completion Plus](https://github.com/yetanotherrepo/obsidian-copilot-auto-completion-plus) by Daniil Shipilov, which itself builds on [Copilot auto completion](https://github.com/j0rd1smit/obsidian-copilot-auto-completion) by Jordi Smit.
+>
+> **本仓库是第三方 fork，非官方版本。** 上游作者与本仓库维护者无关；使用风险自负。
 
+[中文说明](#中文说明) · [English](#english)
 
+---
 
-## Features
-The plugin offers the following features:
+## English
 
-- **Fill-in-the-Middle Auto-Completion**: The plugin provides suggestions based on the `n` characters before and after your cursor, displaying the proposed text as transparent overlay near your cursor, tailored to fit the current context. Want to know how it works? See the [how does the model work in detail?](docs/how%20does%20the%20model%20work%20in%20details.md) documentation.
-- **Context-Aware Suggestions**: The suggestions adapt to the current writing context. For instance, the plugin will offer text suggestions in paragraphs, code in code blocks, and LaTeX formulas in math blocks, among others. Want to know how it does this? See the [context aware few shot examples](docs/how%20does%20the%20model%20work%20in%20details.md#context-aware-few-shot-examples) documentation.
-- **Language-Aware Suggestions**: The automaticly tries to detect the language around the cursor and nudges the model to generate text in that language. See the [language detection documentation](docs/how%20does%20the%20model%20work%20in%20details.md#language-detection) for more information.
-- **Multiple API Providers**: The plugin supports [OpenAI](docs/how-to/OpenAI%20API%20setup%20guide.md), [OpenRouter](docs/how-to/OpenRouter%20API%20setup%20guide.md), [DeepSeek](docs/how-to/DeepSeek%20API%20setup%20guide.md), [Anthropic](docs/how-to/Anthropic%20API%20setup%20guide.md), [Gemini](docs/how-to/Gemini%20API%20setup%20guide.md), [Azure OpenAI](docs/how-to/Azure%20API%20setup%20guide.md), and [Ollama](docs/how-to/Ollama%20setup%20guide.md). OpenAI uses the Responses API by default. OpenAI-compatible Chat Completions URLs remain supported. You can refresh models for OpenAI, OpenRouter, DeepSeek, Anthropic, and Gemini.
-- **Highly Customizable**: Configure elements like [triggers](docs/personalization%20and%20settings.md#triggers), [trigger delay](docs/personalization%20and%20settings.md#trigger-delay), [prefix/suffix size](docs/personalization%20and%20settings.md#preprocessing), [text generation settings](docs/personalization%20and%20settings.md#model-options), [custom few-shot examples](docs/personalization%20and%20settings.md#customize-the-few-shot-examples), and the [custom system prompt](docs/personalization%20and%20settings.md#customize-the-system-prompts) to your liking.
-- **Git-Ignore-Like Functionality**: The plugin features functionality similar to `.gitignore`, automatically disabling itself when opening files that match certain patterns. This helps prevent unintended triggers in sensitive documents. For more information, [click here](docs/how-to/ignore%20files.md).
-- **Partial Suggestions Insertion**: Insert portions of a suggestion incrementally using the right arrow key, enabling word-by-word insertion.
-- **Smart Caching**: Suggestions are cached to minimize API calls. If the typed text matches a cached suggestion, that suggestion is displayed, avoiding an additional API call.
-- **Optimized to Reduce API Calls**: The plugin employs an intelligent queuing and trigger detection system to minimize API call frequency. For more information, [click here](docs/plugin%20design.md).
-- **Easy to disable**: The plugin can be disabled at any time using the `Copilot Auto Completion Plus: Disable` command. This allows you to disable the plugin when working on sensitive documents or when you are currently not in need of suggestions.
+### What this fork adds
 
+| Change | Detail |
+|---|---|
+| **Mobile support** | `isDesktopOnly` removed. The only runtime blocker was `picomatch` (used by the ignore-patterns feature) calling Node's `path` / `process` at module init; this build aliases `path` to `path-browserify` and defines `process.platform`/`process.version` at build time. No Node APIs remain in the bundle. |
+| **zh / en UI** | All settings UI, notices and diagnostics are translated. Language follows the Obsidian app language by default; it can be overridden in *Advanced Settings → General → Interface language*. |
+| **Numeric slider input** | Every slider (temperature, Top P, penalties, max tokens, prefix/suffix limits, delay) has a number box next to it: type a value and press Enter; Esc reverts; values are clamped to range and snapped to step. |
+| **Language-aware defaults** | On first run, Chinese users get a Chinese system prompt, Chinese punctuation triggers (`。，：；！？`) and DeepSeek as the default provider. |
+| **New plugin ID** | `copilot-auto-completion-mobile`. It can coexist with the official plugin; settings are not shared. |
 
-## Getting Started
-To install the plugin, please follow these steps:
+### Install (manual)
 
-1. Open Obsidian.
-2. Navigate to the 'Settings' menu.
-3. Select the 'Community Plugins' tab.
-4. Disable 'Restricted Mode' by turning it off.
-5. Access the Community Plugins Store by clicking the 'Browse' button.
-6. Search for 'Copilot Auto Completion Plus.'
-7. Click the 'Install' button to proceed with the installation.
-8. Once installed, activate the plugin by enabling it in the 'Community Plugins' settings.
-9. Proceed to the 'Copilot Auto Completion Plus' settings section.
-10. Choose your API provider and refer to the corresponding guide for specific instructions: 
-    - [OpenAI API setup guide](docs/how-to/OpenAI%20API%20setup%20guide.md)
-    - [OpenRouter API setup guide](docs/how-to/OpenRouter%20API%20setup%20guide.md)
-    - [DeepSeek API setup guide](docs/how-to/DeepSeek%20API%20setup%20guide.md)
-    - [Anthropic API setup guide](docs/how-to/Anthropic%20API%20setup%20guide.md)
-    - [Gemini API setup guide](docs/how-to/Gemini%20API%20setup%20guide.md)
-    - [Azure OpenAI API setup guide](docs/how-to/Azure%20API%20setup%20guide.md)
-    - [Ollama setup guide](docs/how-to/Ollama%20setup%20guide.md)
-11. Depending on your chosen API provider, you may be required to enter additional details, such as an API key or endpoint URLs.
-12. Once you have entered all necessary information, use the 'Test Connection' button to ensure that the plugin can successfully connect to the API provider.
-13. If the test is successful, the plugin is ready for use.
+1. Download `main.js`, `manifest.json`, `styles.css` from the latest release.
+2. Put them in `<your vault>/.obsidian/plugins/copilot-auto-completion-mobile/`.
+3. Reload Obsidian, then enable **Copilot Auto Completion Mobile (i18n)** in *Settings → Community plugins*.
+4. Choose a provider (OpenAI / OpenRouter / DeepSeek / Anthropic / Gemini / Azure OpenAI / Ollama), paste your API key, press **Test connection**.
 
-The following GIF demonstrates what a successful connection test should look like:
-![settings](assets/settings_demo.gif)
+**Android / iOS:** the same three files work on mobile. On Android 11+, `Android/data` is sandboxed — if you cannot copy files there with a file manager, either use a vault in shared storage (e.g. `Documents/`) or push with `adb` (`adb push` into `<vault>/.obsidian/plugins/...`).
 
-The plugin is now ready for use.  
-It monitors the text you type for specific triggers, such as end-of-sentence punctuation, a new line, or a list item.
-Upon detecting a trigger, it presents context-specific suggestions.  
-For instance, try typing the following:  
-   
-```text  
-# A Tale of Two Cities  
-   
-The most famous quote from this book is:  
-```
-   
-Once you type a space after the `:`, the plugin should display a suggestion like this.
+### Build
 
-![](assets/a-tale-of-two-cities-example.jpg)
-
-Note: To minimize API calls and costs, this plugin is not as sensitive to triggers as the original Copilot.
-It only activates after specific triggers, such as end-of-sentence punctuation, a new line, or a list item.
-For more information, see the [triggers documentation](docs/personalization%20and%20settings.md#triggers).
-
-## How It Works
-
-This plugin utilizes large language models (LLMs) to perform fill-in-the-middle auto-completion. 
-By default, most LLMs are not trained for this specific task. 
-However, through prompt engineering, we can adapt LLMs to facilitate fill-in-the-middle auto-completion.
-The system prompt we use looks roughly like this:
-
-```text
-Your job is to predict the most logical text that should be written at the location of the <mask/>.
-Your answer can be either code, a single word, or multiple sentences.
-Your answer must be in the same language as the existing text.
-...
+```bash
+npm install
+node esbuild.config.mjs production
 ```
 
-We then supply the model with the truncated text before and after the cursor, formatted as `<truncated_text_before_cursor> <mask/> <truncated_text_after_cursor>`. 
-The model responds with the text it predicts should fill the `<mask/>`. 
-After some post-processing, we present this prediction to the user as a suggestion.
+### Notes & risks
 
+- This fork has **not** been reviewed by the Obsidian team and is not listed in the community plugin directory.
+- Mobile behaviour is verified by static analysis and on an Android tablet, but not across every device or ROM.
+- MIT licensed. Upstream copyrights are preserved; see `LICENSE`.
 
-In addition to the system prompt, we provide the model with context-specific examples to enhance its performance and make it more context-aware.
-For instance, if the cursor is within a code block, we supply code-related examples to the model. 
-Conversely, if the cursor is in a title, we offer title-related examples. 
-This approach informs the model of our expectations for the response in the given context. 
-The plugin accommodates a wide array of contexts, including code blocks, math blocks, lists, headings, paragraphs, and more.
-These few-shot examples are customizable, allowing you to tailor them to your writing style or language preferences (see [Custom Few-Shot Examples](docs/personalization%20and%20settings.md#customize-the-few-shot-examples) for more information).
+---
 
-![context aware few shot examples](assets/few-shot-example-visual.gif)
+## 中文说明
 
+### 这个 fork 改了什么
 
-This overview gives you a high-level understanding of how the plugin functions. Interested in more details?
-Explore the following pages:
-- [How Does the Model Work in Detail?](docs/how%20does%20the%20model%20work%20in%20details.md)
-- [How is the plugin designed?](docs/plugin%20design.md)
-- [What are the different states of the plugin?](docs/plugin%20design.md#plugin-design)
+| 改动 | 说明 |
+|---|---|
+| **移动端支持** | 去掉 `isDesktopOnly`。运行时唯一的拦路虎是忽略模式功能依赖的 `picomatch`，它在模块初始化时调用 Node 的 `path`/`process`；本版在构建期把 `path` 别名到 `path-browserify`，并把 `process.platform`/`process.version` 固定为安全值。产物中已无任何 Node API。 |
+| **中英双语界面** | 设置界面、提示消息、诊断面板全部可翻译。默认跟随 Obsidian 界面语言，也可在「高级设置 → 通用 → 界面语言」里手动切换。 |
+| **滑块可输入数值** | 温度、Top P、频率/存在惩罚、最大 Token、前/后缀长度、延迟——每个滑块右侧都有数字框：输入后回车生效，Esc 还原，超范围自动钳制、按步长对齐。 |
+| **按语言的默认值** | 首次运行若界面为中文：默认系统提示词为中文版，默认触发器补上中文标点（`。，：；！？`），默认供应商为 DeepSeek。 |
+| **新的插件 ID** | `copilot-auto-completion-mobile`，可与官方版共存；两者设置不共享。 |
 
+### 手动安装
 
-## Personalization and Settings
+1. 从最新 Release 下载 `main.js`、`manifest.json`、`styles.css`。
+2. 放入 `<你的库>/.obsidian/plugins/copilot-auto-completion-mobile/`。
+3. 重启 Obsidian，在「设置 → 第三方插件」中启用 **Copilot Auto Completion Mobile (i18n)**。
+4. 选择供应商（OpenAI / OpenRouter / DeepSeek / Anthropic / Gemini / Azure OpenAI / Ollama），填入 API Key，点「测试连接」。
 
-The plugin is designed to be highly customizable, allowing you to tailor the following aspects:
+**安卓 / iOS**：三个文件在移动端同样适用。安卓 11+ 的 `Android/data` 受沙箱保护；如果文件管理器无法写入，可改用共享存储中的库（如 `Documents/`），或用 `adb push` 直接推送到 `<库>/.obsidian/plugins/...`。
 
-- **Quick Setup**: Enter your API key, choose a recommended model, and test the connection without touching advanced controls.
-- **API Provider**: OpenAI is the default Quick Setup provider. Advanced Settings also includes [OpenRouter](docs/how-to/OpenRouter%20API%20setup%20guide.md), [DeepSeek](docs/how-to/DeepSeek%20API%20setup%20guide.md), [Anthropic](docs/how-to/Anthropic%20API%20setup%20guide.md), [Gemini](docs/how-to/Gemini%20API%20setup%20guide.md), [Azure OpenAI](docs/how-to/Azure%20API%20setup%20guide.md), and [Ollama](docs/how-to/Ollama%20setup%20guide.md).
-- **[Triggers](docs/personalization%20and%20settings.md#triggers)**: Define the text after which the plugin should suggest a completion.
-- **[Trigger Delay](docs/personalization%20and%20settings.md#trigger-delay)**: Set the duration the plugin should wait before offering a suggestion to minimize costs.
-- **[Prefix/Suffix Size](docs/personalization%20and%20settings.md#preprocessing)**: Determine the amount of text to include in the prediction request.
-- **[Text Generation Settings](docs/personalization%20and%20settings.md#model-options)**: Adjust model-supported parameters like temperature, top-p, max tokens, frequency penalty, and more.
-- **[Custom Few-Shot Examples](docs/personalization%20and%20settings.md#customize-the-few-shot-examples)**: Add your own few-shot examples to enhance the model's accuracy or to match your writing style.
-- **[Custom System Prompt](docs/personalization%20and%20settings.md#customize-the-system-prompts)**: Personalize the system prompt to refine model performance or to suit your style and language preferences.
+### 构建
 
-For detailed guidance on customizing these settings, please visit the [Personalization and Settings](docs/personalization%20and%20settings.md) page.
+```bash
+npm install
+node esbuild.config.mjs production
+```
 
-## Keyboard shortcuts
-The plugin supports the following keyboard shortcuts:
-  
-| Key           | State      | Action                                                                                                          |
-| ------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `Tab`         | Suggesting | Accept the entire suggestion                                                                                    |
-| `Right Arrow` | Suggesting | Accept the next word of the suggestion                                                                          |
-| `Escape`      | Suggesting | Reject the suggestion and clear the suggestion cache                                                            |
-| `Escape`      | Predicting | Cancel the prediction request. This prevents the suggestion from showing up, but the cost has already incurred. |
-| `Escape`      | Queued     | Cancel the prediction request. This prevents the API call, thus no additional costs are incurred.               |
+### 说明与风险
 
-Note that the keyboard shortcuts have different effects depending on the state of the plugin.
-If the plugin is in a state not listed in the table above, the keys will function normally.
-The current state of the plugin is always displayed in the plugin's status bar at the bottom of the screen.
-Click here for more information about the [plugin's states](docs/plugin%20design.md).
-
-## Privacy Considerations
-
-### Network, accounts, and data use
-
-This plugin sends note context around your cursor to the API provider you configure so that the provider can generate a completion. Cloud providers require their own accounts and API keys. Ollama can be used as a local provider if you do not want requests to leave your machine.
-
-Provider API keys and endpoint settings are stored locally by Obsidian with this plugin's settings. The plugin does not include telemetry, ads, analytics, or a separate paid service, and it does not send data anywhere except the provider endpoint you configure.
-
-Do not send sensitive documents to OpenAI, OpenRouter, DeepSeek, Anthropic, Gemini, or Azure OpenAI before you review their privacy terms.
-These providers could potentially store your data and utilize it to enhance their models, based on their current terms and conditions.
-So always make sure to read the terms and conditions of your chosen API provider before using it with this plugin.
-
-To safeguard your privacy, you can take the following measures:
-
-1. Opt for a local API provider like [Ollama](https://ollama.ai/), which ensures your data remains on your computer. To set up a local provider, [click here](docs/how-to/Ollama%20setup%20guide.md) for a guide. However, it's important to note that these local models may not be as accurate or fast as their cloud-based counterparts.
-2. Utilize the `ignore` functionality within the plugin. Within the settings, you can define a list of patterns similar to .gitignore glob patterns. If you open a file matching one of these patterns, the plugin will automatically deactivate for that file and reactivate when you switch to a non-matching file. By default, the settings are configured to ignore all files within any parent folder named secret. For instructions on setting this up, [click here](docs/how-to/ignore files.md).
-3. Manually disable the plugin while working on sensitive documents by using the `Copilot Auto Completion Plus: Disable` command.
-
-## Triggers
-As you write, the plugin monitors the text preceding your cursor to see if it matches any predefined triggers.
-Unlike Copilot, this plugin does not activate after each character you type; it only activates with specific triggers, such as end-of-sentence punctuation, a new line, a list item, math block, code block, etc. 
-This method is intended to minimize the number of API calls and, as a result, the associated costs. 
-The gif below demonstrates how the plugin gets automatically triggered after adding an new line inside a math block.
-
-![demo](assets/demo.gif)
-
-You can tailor these triggers in the plugin's settings according to your preferences. 
-However, please note that more sensitive triggers might increase API calls and, thus, incur higher expenses.
-See the [Personalization and Settings](docs/personalization%20and%20settings.md#triggers) to learn how to customize these triggers to your liking.
-
-In addition to automatic triggers, you can force the plugin to make a prediction by using the command palette (with `CMD + P` on Mac or `CTRL + P` on Windows) and typing `Copilot Auto Completion Plus: Predict`.
-This command enables you to request a prediction from the plugin at any time, independent of automatic triggers.
-Obsidian allows you to assign this command to any hotkey of your choice. 
-To do so, search for `Copilot` in the hotkey settings and assign a hotkey to the `Copilot Auto Completion Plus: Predict` command.
-
-![demo](assets/type_hint_prediction.gif)
-
-## Development
-
-Development uses Node.js 24, npm, and the Obsidian desktop application. The plugin does not require environment variables. Enter provider API keys only in the plugin settings.
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for the local setup and contribution process.
-
-## Troubleshooting
-
-- Run `Test Connection` after you change a provider, API key, endpoint, or model.
-- Use the provider setup guides if the connection test fails.
-- For OpenRouter errors, see the [OpenRouter troubleshooting steps](docs/how-to/OpenRouter%20API%20setup%20guide.md#troubleshooting).
-- For DeepSeek errors, see the [DeepSeek troubleshooting steps](docs/how-to/DeepSeek%20API%20setup%20guide.md#troubleshooting).
-- Use the issue-report button for unexpected plugin errors. Review the report before you submit it.
-
-## Disclaimer
-
-This plugin serves as a connection to the API provider.
-We do not access or retain your data, but it is possible that the API provider does.
-Therefore, it is important to review and understand their terms and conditions and privacy policy.
-Please note that we are not liable for any information you provide to the API provider. 
-You have the discretion to enable or disable the plugin based on the content of your documents. 
-However, when you do this is your own responsibility.
-Please exercise caution when sharing sensitive information such as secrets or personal data with your API provider.
-
-
-## Support
-If you find this plugin useful and would like to support its development, you can buy me a coffee.
-
-<a href="https://buymeacoffee.com/jordismit"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=jordismit&button_colour=5F7FFF&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00"></a>
+- 本 fork **未经 Obsidian 官方审核**，且因插件 ID 与上游不同，不会出现在社区插件市场。
+- 移动端行为经过静态分析与一台安卓平板实机验证，但未覆盖所有机型与系统版本。
+- MIT 许可，保留上游版权声明（见 `LICENSE`）。

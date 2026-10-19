@@ -11,14 +11,15 @@ import {EditorView} from "@codemirror/view";
 import RenderSuggestionPlugin from "./render_plugin/render_surgestion_plugin";
 import {InlineSuggestionState} from "./render_plugin/states";
 import CompletionKeyWatcher from "./render_plugin/completion_key_watcher";
-import {DEFAULT_SETTINGS, Settings} from "./settings/versions";
+import {DEFAULT_SETTINGS, DEFAULT_SYSTEM_MESSAGE_ZH, Settings} from "./settings/versions";
 import {deserializeSettings, serializeSettings} from "./settings/utils";
+import { t, isZh } from "./i18n";
 
 
 export default class CopilotPlugin extends Plugin {
     onload(): void {
         void this.initialize().catch(() => {
-            new Notice("Copilot: Could not initialize the plugin.");
+            new Notice(t("Copilot: Could not initialize the plugin."));
         });
     }
 
@@ -76,7 +77,7 @@ export default class CopilotPlugin extends Plugin {
         });
         this.addCommand({
             id: "accept",
-            name: "Accept",
+            name: t("Accept"),
             editorCheckCallback: (
                 checking: boolean,
                 editor: Editor,
@@ -96,7 +97,7 @@ export default class CopilotPlugin extends Plugin {
 
         this.addCommand({
             id: "predict",
-            name: "Predict",
+            name: t("Predict"),
             editorCheckCallback: (
                 checking: boolean,
                 editor: Editor,
@@ -119,7 +120,7 @@ export default class CopilotPlugin extends Plugin {
 
         this.addCommand({
             id: "toggle",
-            name: "Toggle",
+            name: t("Toggle"),
             callback: () => {
                 const newValue = !settingsTab.settings.enabled;
                 settingsTab.setEnable(newValue);
@@ -127,7 +128,7 @@ export default class CopilotPlugin extends Plugin {
         });
         this.addCommand({
             id: "enable",
-            name: "Enable",
+            name: t("Enable"),
             checkCallback: (checking) => {
                 if (checking) {
                     return !settingsTab.settings.enabled;
@@ -139,7 +140,7 @@ export default class CopilotPlugin extends Plugin {
         });
         this.addCommand({
             id: "disable",
-            name: "Disable",
+            name: t("Disable"),
             checkCallback: (checking) => {
                 if (checking) {
                     return settingsTab.settings.enabled;
@@ -159,11 +160,22 @@ export default class CopilotPlugin extends Plugin {
 
     private async loadSettings(): Promise<Settings> {
         const data: unknown = await this.loadData();
+        const isFirstRun = data === null || data === undefined;
         const result = deserializeSettings(data);
         if (result.isOk()) {
-            return result.value;
+            const settings = result.value;
+            if (isFirstRun && isZh()) {
+                settings.systemMessage = DEFAULT_SYSTEM_MESSAGE_ZH;
+                const known = new Set(settings.triggers.map((trigger) => trigger.value));
+                for (const punctuation of ["。", "，", "：", "；", "！", "？"]) {
+                    if (!known.has(punctuation)) {
+                        settings.triggers.push({type: "string", value: punctuation});
+                    }
+                }
+            }
+            return settings;
         } else {
-            new Notice("Copilot: Could not load settings, reverting to default settings");
+            new Notice(t("Copilot: Could not load settings, reverting to default settings"));
             console.error(result.error);
             return DEFAULT_SETTINGS
         }

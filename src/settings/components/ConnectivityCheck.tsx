@@ -6,6 +6,7 @@ import {Settings} from "../versions";
 import {openGitHubIssue, shouldOfferIssueReport} from "../../support/github_issues";
 import {ProviderError, humanizeProviderError} from "../../prediction_services/provider";
 import {createProviderAdapter} from "../../prediction_services/api_clients/factory";
+import { t } from "../../i18n";
 
 interface IProps {
     pluginVersion: string;
@@ -61,7 +62,7 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
                 setProviderError(result.error);
                 setErrors([humanizeProviderError(result.error)]);
                 new Notice(
-                    `Cannot connect to the ${props.settings.apiProvider} API. Please check your settings.`
+                    t("Cannot connect to the {provider} API. Please check your settings.", {provider: props.settings.apiProvider})
                 );
                 setStatus(Status.Failure);
                 return;
@@ -70,7 +71,7 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
             setErrors([]);
             props.onVerificationChange?.(true);
             new Notice(
-                `Successfully connected to the ${props.settings.apiProvider} API.`
+                t("Successfully connected to the {provider} API.", {provider: props.settings.apiProvider})
             );
             setStatus(Status.Success);
         } catch (e) {
@@ -79,9 +80,9 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
             }
             props.onVerificationChange?.(false);
             const message = e instanceof Error ? e.message : String(e);
-            setErrors([`${message} Check your settings or report an issue.`]);
+            setErrors([`${message} ${t("Check your settings or report an issue.")}`]);
             new Notice(
-                `Cannot connect to the ${props.settings.apiProvider} API. Please check your settings.`
+                t("Cannot connect to the {provider} API. Please check your settings.", {provider: props.settings.apiProvider})
             );
             setStatus(Status.Failure);
             return
@@ -94,7 +95,7 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
         if (status === Status.Loading) {
             return (
                 <span
-                    aria-label="Testing connection"
+                    aria-label={t("Testing connection")}
                     role="status"
                     className="loader-copilot-auto-completion"
                 />
@@ -149,15 +150,15 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
 
     return (
         <SettingsItem
-            name={"Test Connection"}
+            name={t("Test Connection")}
             description={
-                "Verify that the selected provider, key, and model work."
+                t("Verify that the selected provider, key, and model work.")
             }
             errorMessage={errors.join("\n")}
         >
             <span aria-live="polite">{ProgressFeedback()}</span>
             <button
-                aria-label="Test Connection"
+                aria-label={t("Test Connection")}
                 onClick={() => {
                     void onClickConnectionButton();
                 }}
@@ -169,7 +170,7 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
                 providerError || errors.join("\n")
             ) && (
                 <button
-                    aria-label="Report connection issue on GitHub"
+                    aria-label={t("Report connection issue on GitHub")}
                     onClick={() => openGitHubIssue({
                         source: "connectivity-check",
                         pluginVersion: props.pluginVersion,

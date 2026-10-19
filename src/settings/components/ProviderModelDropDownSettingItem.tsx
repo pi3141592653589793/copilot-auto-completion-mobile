@@ -15,6 +15,7 @@ import {
 } from "../../prediction_services/api_clients/model_list";
 import {defaultModelCapabilities} from "../../prediction_services/provider";
 import {isUnsupportedOpenRouterModelId} from "../../openrouter";
+import { t } from "../../i18n";
 
 interface IProps {
     settings: Settings;
@@ -55,14 +56,14 @@ export default function ProviderModelDropDownSettingItem(props: IProps): React.J
         if (result.isErr()) {
             setStatus(Status.Failure);
             setLoadError(result.error.message);
-            new Notice(`Could not load ${props.settings.apiProvider} models.`);
+            new Notice(t("Could not load {provider} models.", {provider: props.settings.apiProvider}));
             return;
         }
 
         const loadedModels = result.value;
         setModels(loadedModels);
         setStatus(Status.Success);
-        new Notice(`Loaded ${loadedModels.length} ${props.settings.apiProvider} models.`);
+        new Notice(t("Loaded {count} {provider} models.", {count: loadedModels.length, provider: props.settings.apiProvider}));
     };
 
     const currentModelIsCustom = props.value.length > 0 && models.every((model) => model.id !== props.value);
@@ -75,16 +76,16 @@ export default function ProviderModelDropDownSettingItem(props: IProps): React.J
             currentModelIsCustom,
             props.verifiedModel
         );
-    const buttonText = status === Status.Loading ? "Loading…" : "Refresh";
+    const buttonText = status === Status.Loading ? "Loading…" : t("Refresh");
 
     return (
         <>
             <DropDownSettingItem
-                name={"Model"}
+                name={t("Model")}
                 description={mode === "quick"
-                    ? "Recommended models are sorted from fastest to highest quality."
+                    ? t("Recommended models are sorted from fastest to highest quality.")
                     : "Choose a model. Refresh the list after changing your API key."}
-                placeholder={"Select a model..."}
+                placeholder={t("Select a model...")}
                 value={props.value}
                 setValue={(value) => props.setValue(value)}
                 options={options}
@@ -93,7 +94,7 @@ export default function ProviderModelDropDownSettingItem(props: IProps): React.J
             />
             {mode === "advanced" && (
                 <SettingsItem
-                    name={"Refresh models"}
+                    name={t("Refresh models")}
                     description={"Load the full model list from the selected provider."}
                     errorMessage={loadError}
                 >
@@ -105,7 +106,7 @@ export default function ProviderModelDropDownSettingItem(props: IProps): React.J
                         />
                     )}
                     <button
-                        aria-label="Refresh models"
+                        aria-label={t("Refresh models")}
                         onClick={() => {
                             void loadModels();
                         }}
@@ -171,7 +172,7 @@ function modelOptions(
 function labelRecommendedModel(model: RecommendedModel): string {
     const badges = [model.speedLabel];
     if (model.recommended) {
-        badges.push("Recommended");
+        badges.push(t("Recommended"));
     } else if (model.qualityLabel) {
         badges.push(model.qualityLabel);
     }
@@ -187,7 +188,7 @@ function labelModel(model: ModelSelection, settings: Settings, verifiedModel?: s
     );
 
     if (capabilities.isReasoningModel) {
-        badges.push("Reasoning");
+        badges.push(t("Reasoning"));
     }
     if (settings.apiProvider === "ollama") {
         badges.push("Local");
@@ -196,14 +197,14 @@ function labelModel(model: ModelSelection, settings: Settings, verifiedModel?: s
         badges.push(verificationLabel(model.id, verifiedModel));
     }
     if (getQuickModels(settings.apiProvider).some((quickModel) => quickModel.id === model.id && quickModel.recommended)) {
-        badges.push("Recommended");
+        badges.push(t("Recommended"));
     }
 
     return badges.length > 0 ? `${model.name} — ${badges.join(" · ")}` : model.name;
 }
 
 function verificationLabel(modelId: string, verifiedModel?: string): string {
-    return modelId === verifiedModel ? "Verified" : "Unverified · Run Test Connection";
+    return modelId === verifiedModel ? t("Verified") : t("Unverified · Run Test Connection");
 }
 
 function endpointFor(settings: Settings): string {

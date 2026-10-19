@@ -27,6 +27,7 @@ import GeminiApiClient from "../api_clients/GeminiApiClient";
 import SensitiveDataRedactor from "../pre_processors/sensitive_data_redactor";
 import OpenRouterApiClient from "../api_clients/OpenRouterApiClient";
 import DeepSeekApiClient from "../api_clients/DeepSeekApiClient";
+import { t } from "../../i18n";
 
 class ChatGPTWithReasoning implements PredictionService {
     private readonly client: ApiClient;
@@ -181,31 +182,31 @@ class ChatGPTWithReasoning implements PredictionService {
 
     private getSystemMessageFor(context: Context): string {
         if (context === Context.Text) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in a paragraph. Your answer must complete this paragraph or sentence in a way that fits the surrounding text without overlapping with it. It must be in the same language as the paragraph.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in a paragraph. Your answer must complete this paragraph or sentence in a way that fits the surrounding text without overlapping with it. It must be in the same language as the paragraph.");
         }
         if (context === Context.Heading) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in the Markdown heading. Your answer must complete this title in a way that fits the content of this paragraph and be in the same language as the paragraph.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in the Markdown heading. Your answer must complete this title in a way that fits the content of this paragraph and be in the same language as the paragraph.");
         }
 
         if (context === Context.BlockQuotes) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located within a quote. Your answer must complete this quote in a way that fits the context of the paragraph.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located within a quote. Your answer must complete this quote in a way that fits the context of the paragraph.");
         }
         if (context === Context.UnorderedList) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in an unordered list. Your answer must include one or more list items that fit with the surrounding list without overlapping with it.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in an unordered list. Your answer must include one or more list items that fit with the surrounding list without overlapping with it.");
         }
 
         if (context === Context.NumberedList) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in a numbered list. Your answer must include one or more list items that fit the sequence and context of the surrounding list without overlapping with it.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in a numbered list. Your answer must include one or more list items that fit the sequence and context of the surrounding list without overlapping with it.");
         }
 
         if (context === Context.CodeBlock) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in a code block. Your answer must complete this code block in the same programming language and support the surrounding code and text outside of the code block.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in a code block. Your answer must complete this code block in the same programming language and support the surrounding code and text outside of the code block.");
         }
         if (context === Context.MathBlock) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in a math block. Your answer must only contain LaTeX code that captures the math discussed in the surrounding text. No text or explaination only LaTex math code.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in a math block. Your answer must only contain LaTeX code that captures the math discussed in the surrounding text. No text or explaination only LaTex math code.");
         }
         if (context === Context.TaskList) {
-            return this.systemMessage + "\n\n" + "The <mask/> is located in a task list. Your answer must include one or more (sub)tasks that are logical given the other tasks and the surrounding text.";
+            return this.systemMessage + "\n\n" + t("The <mask/> is located in a task list. Your answer must include one or more (sub)tasks that are logical given the other tasks and the surrounding text.");
         }
 
 

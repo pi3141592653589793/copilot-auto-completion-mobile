@@ -31,7 +31,25 @@ const context = await esbuild.context({
         "@lezer/common",
         "@lezer/highlight",
         "@lezer/lr",
-        ...builtinModules],
+        // "path" removed from externals on purpose: it is aliased to
+        // path-browserify below so the bundle runs on Obsidian mobile
+        // (Android/iOS), where Node builtins are unavailable.
+        ...builtinModules.filter((m) => m !== "path")],
+    // --- Obsidian mobile (Android) compatibility shims ---
+    // picomatch (via micromatch, used by the gitignore-like ignore feature)
+    // references Node's "path" module and "process.platform"/"process.version"
+    // at module-init time. On Obsidian mobile there is no Node runtime, so:
+    alias: {
+        // pure-JS posix implementation of Node's path module
+        "path": "path-browserify",
+    },
+    define: {
+        // Android uses forward slashes -> non-win32 behaviour is correct
+        "process.platform": '"linux"',
+        // gates picomatch's regex-lookbehind support check; modern WebView
+        // (Chrome 62+) supports lookbehind, so report a modern version
+        "process.version": '"v20.0.0"',
+    },
     format: "cjs",
     target: "es2018",
     logLevel: "info",

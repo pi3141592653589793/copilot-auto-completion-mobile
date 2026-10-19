@@ -1,5 +1,5 @@
 export type {FewShotExample, PromptBundleVersion} from "./shared";
-export {DEFAULT_ANSWER_ONLY_SYSTEM_MESSAGE} from "./v2/v2";
+export {DEFAULT_ANSWER_ONLY_SYSTEM_MESSAGE, DEFAULT_SYSTEM_MESSAGE_EN, DEFAULT_SYSTEM_MESSAGE_ZH} from "./v2/v2";
 export {DEFAULT_SETTINGS, settingsSchema, pluginDataSchema} from "./v4/v4";
 export type {Settings, Trigger, PluginData} from "./v4/v4";
 export {

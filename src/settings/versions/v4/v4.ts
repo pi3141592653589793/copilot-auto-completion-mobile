@@ -28,6 +28,7 @@ export const pluginDataSchema = z.object({
 export const DEFAULT_SETTINGS: Settings = {
     ...DEFAULT_SETTINGS_V3,
     version: "4",
+    apiProvider: "deepseek",
     deepSeekApiSettings: {
         key: "",
         url: "https://api.deepseek.com/chat/completions",

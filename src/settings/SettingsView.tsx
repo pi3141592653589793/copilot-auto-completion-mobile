@@ -16,6 +16,7 @@ import ProviderModelDropDownSettingItem from "./components/ProviderModelDropDown
 import ReportIssueSettingItem from "./components/ReportIssueSettingItem";
 import DiagnosticsSettingItem from "./components/DiagnosticsSettingItem";
 import {capabilitiesForSettings} from "./model_capabilities";
+import { getLangSetting, resetLang, setLang, t } from "../i18n";
 import {
     DEFAULT_SETTINGS,
     MAX_DELAY,
@@ -59,7 +60,7 @@ const PROVIDER_OPTIONS: Record<Settings["apiProvider"], string> = {
     anthropic: "Anthropic API",
     gemini: "Gemini API",
     azure: "Azure OAI API",
-    ollama: "Self-hosted Ollama API",
+    ollama: t("Self-hosted Ollama API"),
 };
 
 export default function SettingsView(props: IProps): React.JSX.Element {
@@ -131,7 +132,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             advancedMode: settings.advancedMode,
         };
         updateSettings(newSettings);
-        new Notice("Factory reset complete.");
+        new Notice(t("Factory reset complete."));
     };
 
     const setProvider = (value: string) => {
@@ -160,17 +161,17 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderEndpointSetting = (provider: Settings["apiProvider"], mode: "quick" | "advanced") => {
         const name = provider === "azure"
-            ? "Azure OAI API URL"
+            ? t("Azure OAI API URL")
             : provider === "ollama"
-                ? "Ollama API URL"
+                ? t("Ollama API URL")
                 : `${PROVIDER_LABELS[provider]} API URL`;
         const description = provider === "openrouter"
-            ? "OpenRouter requests use this official HTTPS endpoint. Custom endpoints are not accepted."
+            ? t("OpenRouter requests use this official HTTPS endpoint. Custom endpoints are not accepted.")
             : provider === "deepseek"
-                ? "DeepSeek requests use this official HTTPS endpoint. Custom endpoints are not accepted."
+                ? t("DeepSeek requests use this official HTTPS endpoint. Custom endpoints are not accepted.")
             : mode === "quick"
-                ? "Custom endpoint for this provider."
-                : "The endpoint used for API requests.";
+                ? t("Custom endpoint for this provider.")
+                : t("The endpoint used for API requests.");
 
         if (provider === "openai") {
             return (
@@ -281,7 +282,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             return (
                 <TextSettingItem
                     name={name}
-                    description={mode === "quick" ? "Paste your Azure deployment URL." : description}
+                    description={mode === "quick" ? t("Paste your Azure deployment URL.") : description}
                     placeholder={"https://resource.openai.azure.com/openai/deployments/model/chat/completions"}
                     type="url"
                     inputMode="url"
@@ -301,7 +302,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         return (
             <TextSettingItem
                 name={name}
-                description={mode === "quick" ? "Local Ollama chat endpoint." : description}
+                description={mode === "quick" ? t("Local Ollama chat endpoint.") : description}
                 placeholder={"http://localhost:11434/api/chat"}
                 type="url"
                 inputMode="url"
@@ -322,11 +323,11 @@ export default function SettingsView(props: IProps): React.JSX.Element {
     const renderKeySetting = (provider: Exclude<Settings["apiProvider"], "ollama">, quick = false) => {
         const description = quick
             ? `Paste your ${PROVIDER_LABELS[provider]} key. It stays in plugin settings.`
-            : "The API key used in requests.";
+            : t("The API key used in requests.");
         if (provider === "openai") {
             return (
                 <TextSettingItem
-                    name={"OpenAI API Key"}
+                    name={t("OpenAI API Key")}
                     description={description}
                     placeholder={"sk-..."}
                     password
@@ -347,7 +348,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         if (provider === "anthropic") {
             return (
                 <TextSettingItem
-                    name={"Anthropic API Key"}
+                    name={t("Anthropic API Key")}
                     description={description}
                     placeholder={"sk-ant-..."}
                     password
@@ -368,7 +369,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         if (provider === "openrouter") {
             return (
                 <TextSettingItem
-                    name={"OpenRouter API Key"}
+                    name={t("OpenRouter API Key")}
                     description={description}
                     placeholder={"sk-or-v1-..."}
                     password
@@ -389,9 +390,9 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         if (provider === "deepseek") {
             return (
                 <TextSettingItem
-                    name={"DeepSeek API Key"}
+                    name={t("DeepSeek API Key")}
                     description={description}
-                    placeholder={"Your DeepSeek API key…"}
+                    placeholder={t("Your DeepSeek API key…")}
                     password
                     autoComplete="off"
                     value={settings.deepSeekApiSettings.key}
@@ -410,9 +411,9 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         if (provider === "gemini") {
             return (
                 <TextSettingItem
-                    name={"Gemini API Key"}
+                    name={t("Gemini API Key")}
                     description={description}
-                    placeholder={"Your Gemini API key…"}
+                    placeholder={t("Your Gemini API key…")}
                     password
                     autoComplete="off"
                     value={settings.geminiApiSettings.key}
@@ -430,9 +431,9 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         }
         return (
             <TextSettingItem
-                name={"Azure API Key"}
+                name={t("Azure API Key")}
                 description={description}
-                placeholder={"Your Azure API key…"}
+                placeholder={t("Your Azure API key…")}
                 password
                 autoComplete="off"
                 value={settings.azureOAIApiSettings.key}
@@ -548,8 +549,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         if (provider === "ollama") {
             return (
                 <TextSettingItem
-                    name={"Model"}
-                    description={"The local Ollama model to use."}
+                    name={t("Model")}
+                    description={t("The local Ollama model to use.")}
                     placeholder="llama3.1:8b"
                     value={settings.ollamaApiSettings.model}
                     setValue={(value: string) =>
@@ -573,8 +574,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         }
         return (
             <SettingsItem
-                name={"Provider"}
-                description={"This vault is already configured to use this provider. Change providers in Advanced Settings."}
+                name={t("Provider")}
+                description={t("This vault is already configured to use this provider. Change providers in Advanced Settings.")}
             >
                 <span>{PROVIDER_LABELS[settings.apiProvider]}</span>
             </SettingsItem>
@@ -585,10 +586,10 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         const provider = settings.apiProvider;
         return (
             <>
-                <h2>Quick Setup</h2>
+                <h2>{t("Quick Setup")}</h2>
                 <CheckBoxSettingItem
-                    name={"Enable"}
-                    description={"Turn autocomplete on or off."}
+                    name={t("Enable")}
+                    description={t("Turn autocomplete on or off.")}
                     enabled={settings.enabled}
                     setEnabled={(value) => updateSettings({enabled: value})}
                 />
@@ -613,10 +614,10 @@ export default function SettingsView(props: IProps): React.JSX.Element {
         const provider = settings.apiProvider;
         return (
             <>
-                <h2>Provider & Endpoints</h2>
+                <h2>{t("Provider & Endpoints")}</h2>
                 <DropDownSettingItem
-                    name={"API Provider"}
-                    description={"Choose the provider used for completion requests."}
+                    name={t("API Provider")}
+                    description={t("Choose the provider used for completion requests.")}
                     value={settings.apiProvider}
                     setValue={setProvider}
                     options={PROVIDER_OPTIONS}
@@ -631,11 +632,11 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderModelOptions = () => (
         <>
-            <h2>Model Options</h2>
+            <h2>{t("Model Options")}</h2>
             {modelCapabilities.isReasoningModel && (
                 <SettingsItem
-                    name={"Reasoning Model"}
-                    description={"The selected model rejects some sampling controls, so unsupported options are hidden."}
+                    name={t("Reasoning Model")}
+                    description={t("The selected model rejects some sampling controls, so unsupported options are hidden.")}
                 >
                     <span/>
                 </SettingsItem>
@@ -643,8 +644,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             {(modelCapabilities.supportsTemperature || modelCapabilities.supportsTopP) && (<>
                 {modelCapabilities.supportsTemperature && (
                     <SliderSettingsItem
-                        name={"Temperature"}
-                        description={"Controls randomness. Lower values are steadier; higher values are more varied."}
+                        name={t("Temperature")}
+                        description={t("Controls randomness. Lower values are steadier; higher values are more varied.")}
                         value={settings.modelOptions.temperature}
                         errorMessage={errors.get("modelOptions.temperature")}
                         setValue={(value: number) =>
@@ -663,7 +664,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 {modelCapabilities.supportsTopP && (
                     <SliderSettingsItem
                         name={"Top P"}
-                        description={"Controls how widely the model samples likely next tokens."}
+                        description={t("Controls how widely the model samples likely next tokens.")}
                         value={settings.modelOptions.top_p}
                         errorMessage={errors.get("modelOptions.top_p")}
                         setValue={(value: number) =>
@@ -683,8 +684,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             {(modelCapabilities.supportsFrequencyPenalty || modelCapabilities.supportsPresencePenalty) && (<>
                 {modelCapabilities.supportsFrequencyPenalty && (
                     <SliderSettingsItem
-                        name={"Frequency Penalty"}
-                        description={"Reduces repeated wording based on how often tokens have already appeared."}
+                        name={t("Frequency Penalty")}
+                        description={t("Reduces repeated wording based on how often tokens have already appeared.")}
                         value={settings.modelOptions.frequency_penalty}
                         errorMessage={errors.get("modelOptions.frequency_penalty")}
                         setValue={(value: number) =>
@@ -702,8 +703,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 )}
                 {modelCapabilities.supportsPresencePenalty && (
                     <SliderSettingsItem
-                        name={"Presence Penalty"}
-                        description={"Encourages the model to introduce wording it has not used yet."}
+                        name={t("Presence Penalty")}
+                        description={t("Encourages the model to introduce wording it has not used yet.")}
                         value={settings.modelOptions.presence_penalty}
                         errorMessage={errors.get("modelOptions.presence_penalty")}
                         setValue={(value: number) =>
@@ -722,8 +723,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             </>)}
             {modelCapabilities.supportsMaxTokens && (
                 <SliderSettingsItem
-                    name={"Max Tokens"}
-                    description={"Maximum completion length returned by the model."}
+                    name={t("Max Tokens")}
+                    description={t("Maximum completion length returned by the model.")}
                     value={settings.modelOptions.max_tokens}
                     errorMessage={errors.get("modelOptions.max_tokens")}
                     setValue={(value: number) =>
@@ -744,26 +745,26 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderProcessingSettings = () => (
         <>
-            <h2>Preprocessing</h2>
+            <h2>{t("Preprocessing")}</h2>
             <CheckBoxSettingItem
-                name={"Exclude Dataview Blocks"}
-                description={"Remove Dataview blocks before sending context to the provider."}
+                name={t("Exclude Dataview Blocks")}
+                description={t("Remove Dataview blocks before sending context to the provider.")}
                 enabled={settings.dontIncludeDataviews}
                 setEnabled={(value) =>
                     updateSettings({dontIncludeDataviews: value})
                 }
             />
             <CheckBoxSettingItem
-                name={"Redact Sensitive Data"}
-                description={"Replace obvious emails, API tokens, bearer tokens, AWS keys, and private keys before requests."}
+                name={t("Redact Sensitive Data")}
+                description={t("Replace obvious emails, API tokens, bearer tokens, AWS keys, and private keys before requests.")}
                 enabled={settings.redactSensitiveData}
                 setEnabled={(value) =>
                     updateSettings({redactSensitiveData: value})
                 }
             />
             <SliderSettingsItem
-                name={"Maximum Prefix Length"}
-                description={"Maximum characters before the cursor sent as context."}
+                name={t("Maximum Prefix Length")}
+                description={t("Maximum characters before the cursor sent as context.")}
                 value={settings.maxPrefixCharLimit}
                 errorMessage={errors.get("maxPrefixCharLimit")}
                 setValue={(value: number) =>
@@ -775,8 +776,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 suffix={" chars"}
             />
             <SliderSettingsItem
-                name={"Maximum Suffix Length"}
-                description={"Maximum characters after the cursor sent as context."}
+                name={t("Maximum Suffix Length")}
+                description={t("Maximum characters after the cursor sent as context.")}
                 value={settings.maxSuffixCharLimit}
                 errorMessage={errors.get("maxSuffixCharLimit")}
                 setValue={(value: number) =>
@@ -787,18 +788,18 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 step={100}
                 suffix={" chars"}
             />
-            <h2>Postprocessing</h2>
+            <h2>{t("Postprocessing")}</h2>
             <CheckBoxSettingItem
-                name={"Remove Duplicate Math Markers"}
-                description={"Remove duplicate `$` markers when the cursor is already inside a math block."}
+                name={t("Remove Duplicate Math Markers")}
+                description={t("Remove duplicate `$` markers when the cursor is already inside a math block.")}
                 enabled={settings.removeDuplicateMathBlockIndicator}
                 setEnabled={(value) =>
                     updateSettings({removeDuplicateMathBlockIndicator: value})
                 }
             />
             <CheckBoxSettingItem
-                name={"Remove Duplicate Code Markers"}
-                description={"Remove duplicate code fence markers when the cursor is already inside a code block."}
+                name={t("Remove Duplicate Code Markers")}
+                description={t("Remove duplicate code fence markers when the cursor is already inside a code block.")}
                 enabled={settings.removeDuplicateCodeBlockIndicator}
                 setEnabled={(value) =>
                     updateSettings({removeDuplicateCodeBlockIndicator: value})
@@ -809,10 +810,10 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderTriggerSettings = () => (
         <>
-            <h2>Trigger</h2>
+            <h2>{t("Trigger")}</h2>
             <SliderSettingsItem
-                name={"Delay"}
-                description={"Milliseconds between your last keystroke and the completion request."}
+                name={t("Delay")}
+                description={t("Milliseconds between your last keystroke and the completion request.")}
                 value={settings.delay}
                 errorMessage={errors.get("delay")}
                 setValue={(value: number) => updateSettings({delay: value})}
@@ -822,8 +823,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 suffix={"ms"}
             />
             <TriggerSettings
-                name={"Trigger Words"}
-                description={"Completions trigger when text before the cursor matches one of these strings or regexes."}
+                name={t("Trigger Words")}
+                description={t("Completions trigger when text before the cursor matches one of these strings or regexes.")}
                 triggers={settings.triggers}
                 setValues={(triggers) => updateSettings({triggers})}
                 errorMessage={errors.get("triggerWords")}
@@ -834,12 +835,12 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderPrivacySettings = () => (
         <>
-            <h2>Privacy</h2>
+            <h2>{t("Privacy")}</h2>
             <SettingsItem
-                name={"Ignored Files"}
+                name={t("Ignored Files")}
                 description={
                     <div>
-                        <p>Ignore matching files or folders. Enter one glob pattern per line.</p>
+                        <p>{t("Ignore matching files or folders. Enter one glob pattern per line.")}</p>
                         <ul>
                             <li><code>path/to/folder/**</code>: ignore everything in a folder.</li>
                             <li><code>**/secret/**</code>: ignore any folder named <code>secret</code>.</li>
@@ -851,7 +852,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 errorMessage={errors.get("ignoredFilePatterns")}
             >
                 <textarea
-                    aria-label="Ignored files"
+                    aria-label={t("Ignored Files")}
                     name="ignored-files"
                     className="setting-item-text-area-copilot-auto-completion"
                     rows={10}
@@ -866,13 +867,13 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 />
             </SettingsItem>
             <SettingsItem
-                name={"Ignored Tags"}
-                description={"Ignore files containing any of these tags. Enter one tag per line without #."}
+                name={t("Ignored Tags")}
+                description={t("Ignore files containing any of these tags. Enter one tag per line without #.")}
                 display={"block"}
                 errorMessage={errors.get("ignoredTags")}
             >
                 <textarea
-                    aria-label="Ignored tags"
+                    aria-label={t("Ignored Tags")}
                     name="ignored-tags"
                     className="setting-item-text-area-copilot-auto-completion"
                     rows={10}
@@ -891,17 +892,17 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderSupportSettings = () => (
         <>
-            <h2>Support</h2>
+            <h2>{t("Support")}</h2>
             <DiagnosticsSettingItem/>
             <ReportIssueSettingItem pluginVersion={props.pluginVersion} settings={settings}/>
 
-            <h2>Danger Zone</h2>
+            <h2>{t("Danger Zone")}</h2>
             <SettingsItem
-                name={"Factory Reset"}
-                description={"Restore defaults. Provider URLs, API keys, and selected models are preserved."}
+                name={t("Factory Reset")}
+                description={t("Restore defaults. Provider URLs, API keys, and selected models are preserved.")}
             >
                 <button
-                    aria-label="Reset to default settings"
+                    aria-label={t("Reset to default settings")}
                     onClick={resetSettings}
                 >
                     Reset
@@ -912,11 +913,11 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderPromptSettings = () => (
         <>
-            <h2>Prompt Engineering</h2>
+            <h2>{t("Prompt Engineering")}</h2>
             <TextSettingItem
-                name={"Answer Extraction Regex"}
-                description={"Optional regex for removing preamble before the final completion."}
-                placeholder={"your regex…"}
+                name={t("Answer Extraction Regex")}
+                description={t("Optional regex for removing preamble before the final completion.")}
+                placeholder={t("your regex…")}
                 value={settings.chainOfThoughRemovalRegex}
                 errorMessage={errors.get("chainOfThoughRemovalRegex")}
                 setValue={(value: string) =>
@@ -927,17 +928,17 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             />
 
             <SettingsItem
-                name={"System Message"}
-                description={"Instructions used to generate a completion."}
+                name={t("System Message")}
+                description={t("Instructions used to generate a completion.")}
                 display={"block"}
                 errorMessage={errors.get("systemMessage")}
             >
                 <textarea
-                    aria-label="System message"
+                    aria-label={t("System Message")}
                     name="system-message"
                     className="setting-item-text-area-copilot-auto-completion"
                     rows={10}
-                    placeholder="Your system message…"
+                    placeholder={t("Your system message…")}
                     value={settings.systemMessage}
                     onChange={(e) =>
                         updateSettings({
@@ -949,13 +950,13 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             </SettingsItem>
 
             <SettingsItem
-                name={"User Message Template"}
-                description={"Template for formatting prefix and suffix with {{prefix}} and {{suffix}}."}
+                name={t("User Message Template")}
+                description={t("Template for formatting prefix and suffix with {{prefix}} and {{suffix}}.")}
                 display={"block"}
                 errorMessage={errors.get("userMessageTemplate")}
             >
                 <textarea
-                    aria-label="User message template"
+                    aria-label={t("User Message Template")}
                     name="user-message-template"
                     className="setting-item-text-area-copilot-auto-completion"
                     rows={3}
@@ -971,8 +972,8 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             </SettingsItem>
             <FewShotExampleSettings
                 fewShotExamples={settings.fewShotExamples}
-                name={"Few-Shot Examples"}
-                description={"Examples that teach the model the expected completion format for each context."}
+                name={t("Few-Shot Examples")}
+                description={t("Examples that teach the model the expected completion format for each context.")}
                 setFewShotExamples={(value) =>
                     updateSettings({fewShotExamples: value})
                 }
@@ -984,24 +985,38 @@ export default function SettingsView(props: IProps): React.JSX.Element {
     const renderAdvancedSettings = () => (
         <>
             <CheckBoxSettingItem
-                name={"Advanced Settings"}
-                description={"Show provider switching, endpoints, model parameters, triggers, privacy, diagnostics, reset, and prompts."}
+                name={t("Advanced Settings")}
+                description={t("Show provider switching, endpoints, model parameters, triggers, privacy, diagnostics, reset, and prompts.")}
                 enabled={settings.advancedMode}
                 setEnabled={(value) => updateSettings({advancedMode: value})}
             />
 
             {settings.advancedMode && (
                 <>
-                    <h2>General</h2>
+                    <h2>{t("General")}</h2>
+                    <DropDownSettingItem
+                        name={t("Interface language")}
+                        description={t("Takes effect immediately. Auto follows the Obsidian app language.")}
+                        value={getLangSetting()}
+                        setValue={(value) => {
+                            if (value === "auto") {
+                                resetLang();
+                            } else {
+                                setLang(value === "zh" ? "zh" : "en");
+                            }
+                            updateSettings({});
+                        }}
+                        options={{auto: t("Auto"), zh: t("Chinese"), en: t("English")}}
+                    />
                     <CheckBoxSettingItem
-                        name={"Cache Completions"}
-                        description={"Reuse recent completions after accepting or rejecting them."}
+                        name={t("Cache Completions")}
+                        description={t("Reuse recent completions after accepting or rejecting them.")}
                         enabled={settings.cacheSuggestions}
                         setEnabled={(value) => updateSettings({cacheSuggestions: value})}
                     />
                     <CheckBoxSettingItem
-                        name={"Debug Mode"}
-                        description={"Log request and response summaries. Note contents and API keys are not logged."}
+                        name={t("Debug Mode")}
+                        description={t("Log request and response summaries. Note contents and API keys are not logged.")}
                         enabled={settings.debugMode}
                         setEnabled={(value) => updateSettings({debugMode: value})}
                     />
@@ -1115,7 +1130,7 @@ function modelFor(settings: Settings): string {
         return settings.geminiApiSettings.model;
     }
     if (settings.apiProvider === "azure") {
-        return "Azure deployment";
+        return t("Azure deployment");
     }
     return settings.ollamaApiSettings.model;
 }

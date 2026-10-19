@@ -4,6 +4,7 @@ import * as React from "react";
 import Context from "../../context_detection";
 import { Notice } from "obsidian";
 import {FewShotExample} from "../versions";
+import { t } from "../../i18n";
 
 interface IProps {
     name: string;
@@ -44,7 +45,7 @@ export default function FewShotExampleSettings(
             const newFewShotExamples = [...props.fewShotExamples];
             const context = Context.get(e.target.value);
             if (context === undefined) {
-                new Notice("Invalid context");
+                new Notice(t("Invalid context"));
                 return;
             }
             newFewShotExamples[index] = {
@@ -136,7 +137,7 @@ export default function FewShotExampleSettings(
                         <div style={{ top: 0, right: 0 }}>
                             <span
                                 className="clickable-icon setting-editor-extra-setting-button"
-                                aria-label="Remove"
+                                aria-label={t("Remove")}
                                 onClick={onClickRemoveButton(index)}
                             >
                                 <svg

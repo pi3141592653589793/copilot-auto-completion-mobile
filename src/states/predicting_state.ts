@@ -4,6 +4,7 @@ import EventListener from "../event_listener";
 import Context from "../context_detection";
 import {showIssueReportNotice} from "../support/issue_notice";
 import {extractProviderError} from "../prediction_services/provider";
+import { t } from "../i18n";
 
 class PredictingState extends State {
     private predictionPromise: Promise<void> | null = null;
@@ -69,7 +70,7 @@ class PredictingState extends State {
 
         if (result.isErr()) {
             showIssueReportNotice(
-                "Copilot: The plugin could not generate a prediction. Open Advanced Settings to view Last request diagnostics, or check the developer console.",
+                t("Copilot: The plugin could not generate a prediction. Open Advanced Settings to view Last request diagnostics, or check the developer console."),
                 {
                     source: "prediction",
                     pluginVersion: this.context.pluginVersion,

@@ -1,9 +1,10 @@
 {
-	"id": "copilot-auto-completion-plus",
-	"name": "Copilot Auto Completion Plus",
-	"version": "1.6.1",
-	"minAppVersion": "0.15.0",
-	"description": "Adds configurable AI auto-completion using OpenAI, OpenRouter, DeepSeek, Anthropic, Gemini, Azure OpenAI, or Ollama.",
-	"author": "Daniil Shipilov",
-	"isDesktopOnly": true
+  "id": "copilot-auto-completion-mobile",
+  "name": "Copilot Auto Completion Mobile (i18n)",
+  "version": "1.6.2",
+  "minAppVersion": "0.15.0",
+  "description": "Unofficial fork: mobile (Android/iOS) support, Chinese/English UI, DeepSeek-friendly defaults, numeric slider inputs.",
+  "author": "pi3141592653589793",
+  "authorUrl": "https://github.com/pi3141592653589793/copilot-auto-completion-mobile",
+  "isDesktopOnly": false
 }

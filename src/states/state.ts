@@ -4,6 +4,7 @@ import {EventHandler} from "./types";
 import {Settings} from "../settings/versions";
 import {checkForErrors} from "../settings/utils";
 import {Notice, TFile} from "obsidian";
+import { t } from "../i18n";
 
 abstract class State implements EventHandler {
     protected readonly context: EventListener;
@@ -16,11 +17,11 @@ abstract class State implements EventHandler {
         const settingErrors = checkForErrors(settings);
 
         if (!settings.enabled) {
-            new Notice("Copilot is now disabled.");
+            new Notice(t("Copilot is now disabled."));
             this.context.transitionToDisabledManualState()
         } else if (settingErrors.size > 0) {
             new Notice(
-                `Copilot: There are ${settingErrors.size} errors in your settings. The plugin will be disabled until they are fixed.`
+                t("Copilot: There are {count} errors in your settings. The plugin will be disabled until they are fixed.", {count: settingErrors.size})
             );
             this.context.transitionToDisabledInvalidSettingsState();
         } else if (this.context.isCurrentFilePathIgnored() || this.context.currentFileContainsIgnoredTag() || this.context.currentFileDisablesCopilot()) {

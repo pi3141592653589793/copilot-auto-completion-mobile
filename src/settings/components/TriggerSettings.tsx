@@ -1,5 +1,6 @@
 import * as React from "react";
 import {Trigger} from "../versions";
+import { t } from "../../i18n";
 
 
 interface IProps {
@@ -131,7 +132,7 @@ function TriggerSettings(props: IProps): React.JSX.Element {
 
                             <div
                                 className="clickable-icon setting-editor-extra-setting-button"
-                                aria-label="Remove"
+                                aria-label={t("Remove")}
                                 onClick={onClickRemoveButton(index)}
                             >
                                 <svg
