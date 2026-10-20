@@ -16,7 +16,8 @@ import ProviderModelDropDownSettingItem from "./components/ProviderModelDropDown
 import ReportIssueSettingItem from "./components/ReportIssueSettingItem";
 import DiagnosticsSettingItem from "./components/DiagnosticsSettingItem";
 import {capabilitiesForSettings} from "./model_capabilities";
-import { getLangSetting, resetLang, setLang, t } from "../i18n";
+import { getLang, getLangSetting, resetLang, setLang, t } from "../i18n";
+import { applyLocalizedDefaults, summarizeLocalizedDefaults } from "./localized_defaults";
 import {
     DEFAULT_SETTINGS,
     MAX_DELAY,
@@ -119,7 +120,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             ...settings.ollamaApiSettings,
         };
 
-        const newSettings: Settings = {
+        const newSettings: Settings = applyLocalizedDefaults({
             ...DEFAULT_SETTINGS,
             apiProvider: settings.apiProvider,
             azureOAIApiSettings,
@@ -130,9 +131,14 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             geminiApiSettings,
             ollamaApiSettings,
             advancedMode: settings.advancedMode,
-        };
+        }, getLang());
         updateSettings(newSettings);
         new Notice(t("Factory reset complete."));
+    };
+
+    const restoreLanguageDefaults = () => {
+        updateSettings(applyLocalizedDefaults(settings, getLang()));
+        new Notice(t("Language defaults restored."));
     };
 
     const setProvider = (value: string) => {
@@ -322,7 +328,9 @@ export default function SettingsView(props: IProps): React.JSX.Element {
 
     const renderKeySetting = (provider: Exclude<Settings["apiProvider"], "ollama">, quick = false) => {
         const description = quick
-            ? `Paste your ${PROVIDER_LABELS[provider]} key. It stays in plugin settings.`
+            ? t("Paste your {provider} key. It stays in plugin settings.", {
+                  provider: PROVIDER_LABELS[provider],
+              })
             : t("The API key used in requests.");
         if (provider === "openai") {
             return (
@@ -897,6 +905,21 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             <ReportIssueSettingItem pluginVersion={props.pluginVersion} settings={settings}/>
 
             <h2>{t("Danger Zone")}</h2>
+            <SettingsItem
+                name={t("Restore Language Defaults")}
+                description={t("Replace the prompt, trigger words and few-shot examples with the {lang} defaults ({triggers} triggers, {examples} examples). API keys, endpoints and models are preserved.", {
+                    lang: getLang() === "zh" ? t("Chinese") : t("English"),
+                    triggers: summarizeLocalizedDefaults(getLang()).triggers,
+                    examples: summarizeLocalizedDefaults(getLang()).examples,
+                })}
+            >
+                <button
+                    aria-label={t("Restore the language-specific prompt, triggers and examples")}
+                    onClick={restoreLanguageDefaults}
+                >
+                    {t("Restore")}
+                </button>
+            </SettingsItem>
             <SettingsItem
                 name={t("Factory Reset")}
                 description={t("Restore defaults. Provider URLs, API keys, and selected models are preserved.")}

@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.6.4
+- Add language-specific defaults: the system prompt, the trigger words and the few-shot examples now differ between Chinese and English.
+- Expand the trigger sets (23 entries for English, 36 for Chinese): CJK punctuation, table cells, footnotes, display math, `1)` numbered lists and `+` bullets.
+- Expand the default few-shot examples to 22 short examples per language, at least two per editing context, so a request still only carries the examples of the current context.
+- Add **Restore Language Defaults** to the danger zone; factory reset now also follows the interface language.
+- Silently upgrade untouched legacy defaults on first load, so existing vaults get the new triggers and examples without a factory reset.
+- Pin the provider in the OpenAI-oriented unit tests, so the suite is green with DeepSeek as the default provider.
+
+## 1.6.3
+- Fix the empty settings page: a slider component used the translation helper without importing it, which crashed the whole settings view on desktop and mobile.
+- Translate the remaining provider key placeholder, the model loading label and the connection test button.
+- Add a numeric input next to every slider, keeping the slider itself.
+
+## 1.6.2
+- First fork release: mobile (Android/iOS) support, Chinese/English interface, DeepSeek-friendly defaults.
+- Bundle `path-browserify` and shim `process.platform` / `process.version` so micromatch works without Node.
+- Add a numeric slider input and a Chinese default prompt with Chinese punctuation triggers.
+
 ## 1.6.1
 - Disable DeepSeek thinking mode for inline predictions.
 - Retry one transient empty DeepSeek response.

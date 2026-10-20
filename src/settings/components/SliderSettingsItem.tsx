@@ -1,6 +1,7 @@
 import * as React from "react";
 import SettingsItem from "./SettingsItem";
 import { useRef } from "react";
+import { t } from "../../i18n";
 
 interface IProps {
     name: string;

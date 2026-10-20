@@ -161,4 +161,11 @@ export const zh: Record<string, string> = {
     "Chinese": "中文",
     "English": "English",
     "Takes effect immediately. Auto follows the Obsidian app language.": "立即生效。「自动」跟随 Obsidian 的界面语言。",
+    "Paste your {provider} key. It stays in plugin settings.": "粘贴你的 {provider} 密钥，它只保存在插件设置里。",
+    "Loading models": "正在加载模型…",
+    "Restore Language Defaults": "恢复本语言默认值",
+    "Restore the language-specific prompt, triggers and examples": "恢复与当前语言匹配的提示词、触发词与少样本示例",
+    "Replace the prompt, trigger words and few-shot examples with the {lang} defaults ({triggers} triggers, {examples} examples). API keys, endpoints and models are preserved.": "用{lang}默认值替换系统提示词、触发词和少样本示例（{triggers} 条触发词、{examples} 条示例）。API 密钥、接口地址和模型会保留。",
+    "Language defaults restored.": "已恢复本语言默认值。",
+    "Restore": "恢复",
 };

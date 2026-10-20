@@ -1,3 +1,5 @@
+import { getLanguage } from "obsidian";
+
 import { en } from "./en";
 import { zh } from "./zh";
 
@@ -9,12 +11,13 @@ const DICTS: Record<Lang, Record<string, string>> = { en, zh };
 
 let current: Lang | null = null;
 
-/** Detect language from Obsidian app language (localStorage) or navigator. */
+/** Detect language from the Obsidian UI language, falling back to navigator. */
 export function detectLang(): Lang {
     try {
+        // getLanguage() is missing on very old builds; guard so detection still
+        // falls back to the browser language instead of throwing.
         const appLang =
-            window.localStorage.getItem("language") ||
-            window.localStorage.getItem("app_language") ||
+            (typeof getLanguage === "function" ? getLanguage() : "") ||
             navigator.language ||
             "en";
         return appLang.toLowerCase().startsWith("zh") ? "zh" : "en";
@@ -32,7 +35,7 @@ export function getLang(): Lang {
                 return null;
             }
         })();
-        current = stored === "zh" || stored === "en" ? (stored as Lang) : detectLang();
+        current = stored === "zh" || stored === "en" ? stored : detectLang();
     }
     return current;
 }
@@ -70,7 +73,7 @@ export function resetLang(): void {
 export function getLangSetting(): "auto" | Lang {
     try {
         const stored = window.localStorage.getItem(STORAGE_KEY);
-        return stored === "zh" || stored === "en" ? (stored as Lang) : "auto";
+        return stored === "zh" || stored === "en" ? stored : "auto";
     } catch {
         return "auto";
     }

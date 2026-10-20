@@ -164,7 +164,7 @@ export default function ConnectivityCheck(props: IProps): React.JSX.Element {
                 }}
                 disabled={status === Status.Loading}
             >
-                Test Connection
+                {t("Test Connection")}
             </button>
             {status === Status.Failure && shouldOfferIssueReport(
                 providerError || errors.join("\n")

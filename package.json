@@ -1,6 +1,6 @@
 {
   "name": "obsidian-copilot-auto-completion-mobile",
-  "version": "1.6.2",
+  "version": "1.6.4",
   "description": "Unofficial fork of Copilot Auto Completion Plus with mobile support and zh/en i18n.",
   "main": "main.js",
   "scripts": {

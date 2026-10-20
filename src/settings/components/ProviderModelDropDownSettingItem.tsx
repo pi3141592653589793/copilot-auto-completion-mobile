@@ -100,7 +100,7 @@ export default function ProviderModelDropDownSettingItem(props: IProps): React.J
                 >
                     {status === Status.Loading && (
                         <span
-                            aria-label="Loading models"
+                            aria-label={t("Loading models")}
                             role="status"
                             className="loader-copilot-auto-completion"
                         />

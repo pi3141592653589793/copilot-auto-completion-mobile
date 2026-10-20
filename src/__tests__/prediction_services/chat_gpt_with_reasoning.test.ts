@@ -91,6 +91,9 @@ function testSettings(overrides: Partial<Settings> = {}): Settings {
     const settings = cloneDeep(DEFAULT_SETTINGS);
     return {
         ...settings,
+        // This fork defaults to DeepSeek; these tests exercise the
+        // OpenAI-compatible pipeline, so pin the provider explicitly.
+        apiProvider: "openai",
         openAIApiSettings: {
             ...settings.openAIApiSettings,
             key: "test-key",

@@ -11,9 +11,10 @@ import {EditorView} from "@codemirror/view";
 import RenderSuggestionPlugin from "./render_plugin/render_surgestion_plugin";
 import {InlineSuggestionState} from "./render_plugin/states";
 import CompletionKeyWatcher from "./render_plugin/completion_key_watcher";
-import {DEFAULT_SETTINGS, DEFAULT_SYSTEM_MESSAGE_ZH, Settings} from "./settings/versions";
+import {DEFAULT_SETTINGS, Settings} from "./settings/versions";
 import {deserializeSettings, serializeSettings} from "./settings/utils";
-import { t, isZh } from "./i18n";
+import {applyLocalizedDefaults, upgradeLegacyDefaults} from "./settings/localized_defaults";
+import { t, getLang } from "./i18n";
 
 
 export default class CopilotPlugin extends Plugin {
@@ -163,21 +164,24 @@ export default class CopilotPlugin extends Plugin {
         const isFirstRun = data === null || data === undefined;
         const result = deserializeSettings(data);
         if (result.isOk()) {
-            const settings = result.value;
-            if (isFirstRun && isZh()) {
-                settings.systemMessage = DEFAULT_SYSTEM_MESSAGE_ZH;
-                const known = new Set(settings.triggers.map((trigger) => trigger.value));
-                for (const punctuation of ["。", "，", "：", "；", "！", "？"]) {
-                    if (!known.has(punctuation)) {
-                        settings.triggers.push({type: "string", value: punctuation});
-                    }
-                }
+            const lang = getLang();
+            if (isFirstRun) {
+                // First launch: pick the prompt / triggers / few-shot examples
+                // that match the current interface language.
+                return applyLocalizedDefaults(result.value, lang);
             }
-            return settings;
+            const upgraded = upgradeLegacyDefaults(result.value, lang);
+            if (upgraded !== null) {
+                // The user never edited the prompt, triggers or examples:
+                // move them to the new language-specific defaults once.
+                await this.saveSettings(upgraded);
+                return upgraded;
+            }
+            return result.value;
         } else {
             new Notice(t("Copilot: Could not load settings, reverting to default settings"));
             console.error(result.error);
-            return DEFAULT_SETTINGS
+            return applyLocalizedDefaults(DEFAULT_SETTINGS, getLang());
         }
     }
 

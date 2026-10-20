@@ -161,4 +161,11 @@ export const en: Record<string, string> = {
     "Chinese": "Chinese",
     "English": "English",
     "Takes effect immediately. Auto follows the Obsidian app language.": "Takes effect immediately. Auto follows the Obsidian app language.",
+    "Paste your {provider} key. It stays in plugin settings.": "Paste your {provider} key. It stays in plugin settings.",
+    "Loading models": "Loading models",
+    "Restore Language Defaults": "Restore Language Defaults",
+    "Restore the language-specific prompt, triggers and examples": "Restore the language-specific prompt, triggers and examples",
+    "Replace the prompt, trigger words and few-shot examples with the {lang} defaults ({triggers} triggers, {examples} examples). API keys, endpoints and models are preserved.": "Replace the prompt, trigger words and few-shot examples with the {lang} defaults ({triggers} triggers, {examples} examples). API keys, endpoints and models are preserved.",
+    "Language defaults restored.": "Language defaults restored.",
+    "Restore": "Restore",
 };

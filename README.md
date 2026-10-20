@@ -39,7 +39,8 @@ The plugin only uses APIs available on every Obsidian platform: `requestUrl`, `r
 | **Mobile support** | `isDesktopOnly` removed. The only runtime blocker was `picomatch` (used by the ignore-patterns feature) calling Node's `path` / `process` at module init; this build aliases `path` to `path-browserify` and defines `process.platform`/`process.version` at build time. No Node APIs remain in the bundle. |
 | **zh / en UI** | All settings UI, notices and diagnostics are translated. Language follows the Obsidian app language by default; it can be overridden in *Advanced Settings → General → Interface language*. |
 | **Numeric slider input** | Every slider (temperature, Top P, penalties, max tokens, prefix/suffix limits, delay) has a number box next to it: type a value and press Enter; Esc reverts; values are clamped to range and snapped to step. |
-| **Language-aware defaults** | On first run, Chinese users get a Chinese system prompt, Chinese punctuation triggers (`。，：；！？`) and DeepSeek as the default provider. |
+| **Language-aware defaults** | The system prompt, the trigger words and the few-shot examples come in two complete sets. Chinese: 36 triggers (CJK punctuation like `。，：；！？、` plus Markdown structure) and 22 Chinese examples on top of the Chinese prompt. English: 23 triggers and 22 English examples. Only the examples of the *current* editing context are sent with a request, so the extra examples cost little. DeepSeek is the default provider. |
+| **Restore Language Defaults** | *Advanced Settings → Danger Zone → Restore Language Defaults* swaps the prompt, triggers and examples for the current interface language, keeping keys, endpoints and models. Vaults that never edited these are upgraded silently on first load. |
 | **New plugin ID** | `copilot-auto-completion-mobile`. It can coexist with the official plugin; settings are not shared. |
 
 ### Install (manual)
@@ -75,7 +76,8 @@ node esbuild.config.mjs production
 | **移动端支持** | 去掉 `isDesktopOnly`。运行时唯一的拦路虎是忽略模式功能依赖的 `picomatch`，它在模块初始化时调用 Node 的 `path`/`process`；本版在构建期把 `path` 别名到 `path-browserify`，并把 `process.platform`/`process.version` 固定为安全值。产物中已无任何 Node API。 |
 | **中英双语界面** | 设置界面、提示消息、诊断面板全部可翻译。默认跟随 Obsidian 界面语言，也可在「高级设置 → 通用 → 界面语言」里手动切换。 |
 | **滑块可输入数值** | 温度、Top P、频率/存在惩罚、最大 Token、前/后缀长度、延迟——每个滑块右侧都有数字框：输入后回车生效，Esc 还原，超范围自动钳制、按步长对齐。 |
-| **按语言的默认值** | 首次运行若界面为中文：默认系统提示词为中文版，默认触发器补上中文标点（`。，：；！？`），默认供应商为 DeepSeek。 |
+| **按语言的默认值** | 系统提示词、触发词、少样本示例都准备了完整的中英两套。中文：36 条触发词（`。，：；！？、…—` 等中文标点，外加 Markdown 结构触发）＋ 22 条中文示例；英文：23 条触发词 ＋ 22 条英文示例。请求时只带**当前编辑上下文**对应的示例，所以示例变多几乎不增加 token。默认供应商为 DeepSeek。 |
+| **恢复本语言默认值** | 「高级设置 → 危险区 → 恢复本语言默认值」会用当前界面语言那一套提示词、触发词和示例覆盖现有设置，API 密钥、接口地址、模型都保留。从未改过这三项的库会在首次加载时静默升级。 |
 | **新的插件 ID** | `copilot-auto-completion-mobile`，可与官方版共存；两者设置不共享。 |
 
 ### 手动安装

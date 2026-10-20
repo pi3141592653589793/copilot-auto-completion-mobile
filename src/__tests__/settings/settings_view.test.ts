@@ -35,21 +35,35 @@ function renderSettings(settings: Settings): string {
 }
 
 describe("SettingsView quick setup", () => {
-    test("shows a compact OpenAI-first quick setup by default", () => {
+    test("shows a compact DeepSeek-first quick setup by default", () => {
+        // This fork defaults to DeepSeek instead of OpenAI.
         const settings = cloneDeep(DEFAULT_SETTINGS);
         settings.advancedMode = false;
 
         const html = renderSettings(settings);
 
         expect(html).toContain("Quick Setup");
-        expect(html).toContain("OpenAI API Key");
-        expect(html).toContain("GPT-5.4 mini");
+        expect(html).toContain("DeepSeek API Key");
+        expect(html).toContain("DeepSeek V4 Flash");
         expect(html).toContain("Test Connection");
         expect(html).not.toContain("Cache Completions");
         expect(html).not.toContain("Debug Mode");
         expect(html).not.toContain("Model Options");
         expect(html).not.toContain("Trigger Words");
         expect(html).not.toContain("Prompt Engineering");
+    });
+
+    test("offers language-specific default restoration in advanced settings", () => {
+        const settings = cloneDeep(DEFAULT_SETTINGS);
+        settings.advancedMode = true;
+
+        const html = renderSettings(settings);
+
+        expect(html).toContain("Trigger Words");
+        expect(html).toContain("Few-Shot Examples");
+        // The dangerous-zone action that swaps prompt/triggers/examples for the
+        // current interface language must be rendered in both locales.
+        expect(html).toContain("Restore Language Defaults");
     });
 
     test("shows current non-OpenAI provider without exposing provider switching", () => {
